@@ -10,6 +10,87 @@ import re
 
 
 
+def countPointResults(points, playerList):
+    '''Counts number of times point ended certain way for player
+    Args
+        - points: points dataframe
+        - playerList: list of players
+    Returns dataframe
+    '''
+
+    # List of point results
+    resultList = ['ace', 'double fault', 'forced error', 'service winner', 'unforced error', 'winner']
+
+
+    # Initialize list (we will append to this later)
+    pointOutcomeList = []
+
+    # Iterate through players
+    for player in playerList:
+        
+        # Create dictionary where keys are point results and values are number of points for that result
+
+        pointOutcomeDict={}
+        pointOutcomeDict['Player'] = player
+        
+        for result in resultList:
+            if result in ['double fault', 'forced error', 'unforced error']:
+                wORl='loser'
+            else:
+                wORl='winner'
+        
+            pointOutcomeDict[result.title()] =  len(filterPointDF(points, player, result=result, wORlCol=wORl))
+        
+        # Add dictionary to list
+        pointOutcomeList.append(pointOutcomeDict)
+    
+    # Return dataframe
+    pointOutcomeDF = pd.DataFrame.from_records(pointOutcomeList)
+    return pointOutcomeDF
+
+
+def countPointsWon(points, playerList):
+    '''Counts number of times player won point
+    Args
+        - points: points dataframe
+        - playerList: list of players
+    Returns dataframe
+    '''
+
+    # List of point results
+    resultPlayerWin = ['ace', 'forced error', 'service winner', 'winner']
+    resultPlayerLose = ['double fault', 'unforced error']
+
+
+    # Initialize list (we will append to this later)
+    pointsWonList = []
+
+    # Iterate through players
+    for player in playerList:
+        
+        # Create dictionary where keys are point results and values are number of points won for that result
+
+        pointsWonDict={}
+        pointsWonDict['Player'] = player
+
+
+        pointsWonDict['Points Player Won'] = 0
+        for result in resultPlayerWin:
+            pointsWonDict['Points Player Won'] += len(filterPointDF(points, player, result=result, wORlCol='winner'))
+        
+        pointsWonDict['Points Opponent Lost'] = 0
+        for result in resultPlayerLose:
+            pointsWonDict['Points Opponent Lost'] += len(filterPointDF(points, player, result=result, wORlCol='winner'))
+        
+                
+        # Add dictionary to list
+        pointsWonList.append(pointsWonDict)
+    
+    # Return dataframe
+    pointsWonDF = pd.DataFrame.from_records(pointsWonList)
+    return pointsWonDF
+
+
 def filterPointDF(points, player, rallyLength=None, sORrCol=None, result=None, wORlCol=None, resultCol='result', rallyLengthCol='rallyLength'):
     '''Calculates metric for given arguments
     Args
