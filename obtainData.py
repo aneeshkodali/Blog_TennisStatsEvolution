@@ -58,8 +58,8 @@ def countPointsWon(points, playerList):
     '''
 
     # List of point results
-    resultPlayerWin = ['ace', 'forced error', 'service winner', 'winner']
-    resultPlayerLose = ['double fault', 'unforced error']
+    resultPlayerWin = ['forced error', 'winner']
+    resultPlayerLose = ['unforced error']
 
 
     # Initialize list (we will append to this later)
